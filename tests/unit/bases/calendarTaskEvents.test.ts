@@ -23,8 +23,8 @@ function createContext(
 	overrides: Partial<CalendarTaskEventContext> = {}
 ): CalendarTaskEventContext {
 	return {
-		getPriorityColor: jest.fn((priority) =>
-			priority === "high" ? "#ff0000" : undefined
+		getStatusColor: jest.fn((status) =>
+			status === "high" ? "#ff0000" : undefined
 		),
 		isCompletedStatus: jest.fn((status) => status === "done"),
 		getThemeTextColor: jest.fn(() => "#202124"),
@@ -83,7 +83,7 @@ describe("calendar task event builders", () => {
 
 	it("uses theme text color for theme-variable priority colors", () => {
 		const context = createContext({
-			getPriorityColor: () => "accent",
+			getStatusColor: () => "accent",
 			getThemeTextColor: jest.fn(() => "#f8fafc"),
 		});
 

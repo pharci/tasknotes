@@ -107,6 +107,20 @@ export function renderAppearanceTab(
 				setting.setDesc(`Currently showing: ${currentLabels.join(", ")}`);
 				setting.settingEl.addClass("settings-view__group-description");
 			});
+
+			group.addSetting((setting) =>
+				void configureTextSetting(setting, {
+					name: "Calendar secondary property",
+					desc: "Frontmatter property to show below task titles in calendar task cards.",
+					placeholder: "client",
+					getValue: () => plugin.settings.secondaryProperty || "",
+					setValue: (value) => {
+						plugin.settings.secondaryProperty = value.trim();
+						save();
+					},
+					ariaLabel: "Calendar secondary property",
+				})
+			);
 		}
 	);
 

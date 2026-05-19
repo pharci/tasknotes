@@ -33,7 +33,7 @@ export interface CalendarTaskEvent {
 }
 
 export interface CalendarTaskEventContext {
-	getPriorityColor(priority: string): string | undefined;
+	getStatusColor(status: string): string | undefined;
 	isCompletedStatus(status: string): boolean;
 	getThemeTextColor(useThemeColor?: boolean): string;
 }
@@ -71,7 +71,7 @@ export function createScheduledTaskEvent(
 	}
 
 	const borderColor = normalizeThemeColor(
-		context.getPriorityColor(task.priority),
+		context.getStatusColor(task.status),
 		"var(--color-accent)"
 	);
 	const textColor = isCssVariableColor(borderColor)
@@ -113,7 +113,7 @@ export function createDueTaskEvent(
 	}
 
 	const borderColor = normalizeThemeColor(
-		context.getPriorityColor(task.priority),
+		context.getStatusColor(task.status),
 		"var(--color-orange)"
 	);
 	const textColor = isCssVariableColor(borderColor)
@@ -168,7 +168,7 @@ function createAllDayScheduledToDueSpanEvent(
 	endDateExclusive.setDate(endDateExclusive.getDate() + 1);
 
 	const borderColor = normalizeThemeColor(
-		context.getPriorityColor(task.priority),
+		context.getStatusColor(task.status),
 		"var(--color-accent)"
 	);
 	const textColor = isCssVariableColor(borderColor)
@@ -213,7 +213,7 @@ function createTimedScheduledToDueSpanEvents(
 	const lastDate = parseDateToLocal(getDatePart(task.due));
 
 	const borderColor = normalizeThemeColor(
-		context.getPriorityColor(task.priority),
+		context.getStatusColor(task.status),
 		"var(--color-accent)"
 	);
 	const textColor = isCssVariableColor(borderColor)

@@ -395,6 +395,7 @@ export const DEFAULT_SETTINGS: TaskNotesSettings = {
 		"blocked", // Blocked indicator
 		"blocking", // Blocking indicator
 	],
+	secondaryProperty: "",
 	// Default visible properties for inline task cards (more compact by default)
 	inlineVisibleProperties: ["status", "priority", "due", "scheduled", "recurrence"],
 	// Bases integration defaults

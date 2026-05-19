@@ -294,19 +294,6 @@ export function applyRecurringTaskStyling(
 
 	// Apply strikethrough styling for completed tasks
 	if (isCompleted) {
-		const titleElement = element.querySelector(".fc-event-title, .fc-event-title-container");
-		if (titleElement) {
-			(titleElement as HTMLElement).classList.remove(
-				"tn-static-text-decoration-none-80d654f9"
-			);
-			(titleElement as HTMLElement).classList.add(
-				"tn-static-text-decoration-line-through-7059a4e5"
-			);
-		} else {
-			// Fallback: apply to the entire event element
-			element.classList.remove("tn-static-text-decoration-none-80d654f9");
-			element.classList.add("tn-static-text-decoration-line-through-7059a4e5");
-		}
 		element.classList.add("fc-completed-event");
 	}
 }
@@ -477,7 +464,7 @@ export function shiftTaskDatePreservingTime(dateValue: string, timeDiffMs: numbe
 
 function createTaskEventContext(plugin: TaskNotesPlugin): CalendarTaskEventContext {
 	return {
-		getPriorityColor: (priority) => plugin.priorityManager.getPriorityConfig(priority)?.color,
+		getStatusColor: (status) => plugin.statusManager.getStatusConfig(status)?.color,
 		isCompletedStatus: (status) => plugin.statusManager.isCompletedStatus(status),
 		getThemeTextColor: (useThemeColor = false) => getEventTextColor(useThemeColor),
 	};
@@ -710,9 +697,9 @@ export function createNextScheduledEvent(
 	} else if (!hasTime) {
 		endDate = calculateAllDayEndDate(eventStart, task.timeEstimate);
 	}
-
-	const priorityConfig = plugin.priorityManager.getPriorityConfig(task.priority);
-	const borderColor = normalizeThemeColor(priorityConfig?.color, "var(--color-accent)");
+	
+	const statusConfig = plugin.statusManager.getStatusConfig(task.status);
+	const borderColor = normalizeThemeColor(statusConfig?.color, "var(--color-accent)");
 	const isInstanceCompleted = task.complete_instances?.includes(instanceDate) || false;
 	const isInstanceSkipped = task.skipped_instances?.includes(instanceDate) || false;
 	// Use theme-appropriate text color when border is a CSS variable
@@ -769,8 +756,8 @@ export function createRecurringEvent(
 		endDate = calculateAllDayEndDate(eventStart, task.timeEstimate);
 	}
 
-	const priorityConfig = plugin.priorityManager.getPriorityConfig(task.priority);
-	const borderColor = normalizeThemeColor(priorityConfig?.color, "var(--color-accent)");
+	const statusConfig = plugin.statusManager.getStatusConfig(task.status);
+	const borderColor = normalizeThemeColor(statusConfig?.color, "var(--color-accent)");
 	const isInstanceCompleted = task.complete_instances?.includes(instanceDate) || false;
 	const isInstanceSkipped = task.skipped_instances?.includes(instanceDate) || false;
 

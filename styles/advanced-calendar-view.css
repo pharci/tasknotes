@@ -75,7 +75,7 @@
 
 .fc-event[data-ics-event="true"]:hover {
     opacity: 1;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .fc-event[data-ics-event="true"].has-related-note {
@@ -296,7 +296,8 @@
 
 .timeblock-attachment-info {
     flex: 1;
-    min-width: 0; /* Allow text truncation */
+    min-width: 0;
+    /* Allow text truncation */
 }
 
 .timeblock-attachment-name {
@@ -846,12 +847,12 @@
     width: 100%;
 }
 
-.advanced-calendar-view.advanced-calendar-view--list .fc-list-task-card > td:not(.fc-list-card-content) {
+.advanced-calendar-view.advanced-calendar-view--list .fc-list-task-card>td:not(.fc-list-card-content) {
     display: none;
 }
 
 .advanced-calendar-view.advanced-calendar-view--list .fc-list-event.fc-list-task-card:hover,
-.advanced-calendar-view.advanced-calendar-view--list .fc-list-event.fc-list-task-card:hover > .fc-list-card-content {
+.advanced-calendar-view.advanced-calendar-view--list .fc-list-event.fc-list-task-card:hover>.fc-list-card-content {
     background: transparent;
     background-color: transparent;
 }
@@ -866,6 +867,15 @@
 
 .advanced-calendar-view.advanced-calendar-view--list .task-card__title-text {
     min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.advanced-calendar-view .fc-task-secondary-property {
+    opacity: 0.75;
+    font-size: var(--font-ui-smaller);
+    line-height: 1.25;
+
+    white-space: normal;
     overflow-wrap: anywhere;
 }
 
@@ -1150,46 +1160,47 @@
         align-items: stretch;
         gap: 0.75rem;
     }
-    
+
     .advanced-calendar-view__main-row .filter-bar-container {
         min-width: unset;
     }
-    
+
     .advanced-calendar-view__controls {
         justify-content: space-between;
     }
 }
 
 @media (max-width: 768px) {
+
     /* Show mobile toggle on small screens */
     .advanced-calendar-view__mobile-toggle {
         display: block;
     }
-    
+
     /* Hide main row by default on mobile when collapsed */
     .advanced-calendar-view__main-row.collapsed {
         display: none;
     }
-    
+
     .advanced-calendar-view__main-row.expanded {
         display: flex;
     }
-    
+
     .advanced-calendar-view__controls {
         flex-direction: column;
         align-items: stretch;
         gap: 0.75rem;
     }
-    
-    
+
+
     .advanced-calendar-view__schedule-tasks-btn {
         align-self: center;
     }
-    
+
     .advanced-calendar-view__calendar-container {
         padding: 0.5rem;
     }
-    
+
     /* Reduce header padding on mobile */
     .advanced-calendar-view__header {
         padding: 0.25rem 0.5rem;
@@ -1418,7 +1429,7 @@
 }
 
 /* Metadata spacing without separators */
-.fc-list-task-metadata > span {
+.fc-list-task-metadata>span {
     display: block;
     margin: 2px 0;
     background-color: var(--background-secondary);
@@ -1524,6 +1535,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

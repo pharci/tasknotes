@@ -212,6 +212,8 @@ export interface TaskNotesSettings {
 	enableModalSplitLayout: boolean;
 	// Default visible properties for task cards (when no saved view is active)
 	defaultVisibleProperties?: string[];
+	// Optional frontmatter property to show beneath task titles in calendar task cards
+	secondaryProperty: string;
 	// Default visible properties for inline task cards (task link widgets in editor)
 	inlineVisibleProperties?: string[];
 	// Bases integration settings

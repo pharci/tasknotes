@@ -85,6 +85,7 @@ import {
 	normalizeCalendarRelatedNoteCount,
 	type BasesEntryWithGetValue,
 } from "./calendarEventMount";
+import { getTaskCardSecondaryPropertyText } from "../ui/taskCardTitle";
 import { CALENDAR_END_TIME_MAX_HOUR, normalizeCalendarTimeValue } from "../utils/calendarTime";
 import { filterEmptyProjects, sanitizeForCssClass } from "../utils/helpers";
 import { createTaskNotesLogger } from "../utils/tasknotesLogger";
@@ -2568,7 +2569,10 @@ export class CalendarView extends BasesViewBase {
 				config: this.config,
 				visibleProperties: this.getVisibleProperties(),
 				basesEntryByPath: this.basesEntryByPath,
-				buildTaskCardOptions: (options) => this.buildTaskCardOptions(options),
+				buildTaskCardOptions: (options) => ({
+					...this.buildTaskCardOptions(options),
+					secondaryProperty: this.plugin.settings.secondaryProperty,
+				}),
 				logDebug: (message, ...data) =>
 					tasknotesLogger.debug(message, {
 						category: "provider",
@@ -2605,6 +2609,7 @@ export class CalendarView extends BasesViewBase {
 			arg.el.setAttribute("data-task-path", taskInfo.path);
 			arg.el.classList.add("fc-task-event");
 			this.attachTaskEventHoverLink(arg.el, taskInfo.path);
+			this.renderCalendarEventSecondaryProperty(arg.el, taskInfo);
 
 			// Add tag classes to tasks
 			if (taskInfo.tags && taskInfo.tags.length > 0) {
@@ -2751,6 +2756,35 @@ export class CalendarView extends BasesViewBase {
 					menu.showAtPosition({ x: e.clientX, y: e.clientY });
 				}
 			});
+		}
+	}
+
+	private renderCalendarEventSecondaryProperty(element: HTMLElement, taskInfo: TaskInfo): void {
+		const existing = element.querySelector<HTMLElement>(".fc-task-secondary-property");
+		const text = getTaskCardSecondaryPropertyText(
+			taskInfo,
+			this.plugin,
+			this.plugin.settings.secondaryProperty
+		);
+
+		if (!text) {
+			existing?.remove();
+			return;
+		}
+
+		const titleEl = element.querySelector<HTMLElement>(".fc-event-title");
+		if (!titleEl) {
+			return;
+		}
+
+		const secondaryEl =
+			existing ||
+			element.ownerDocument.createElement("div");
+		secondaryEl.className = "fc-task-secondary-property";
+		secondaryEl.textContent = text.replace(/\[\[|\]\]/g, "");
+
+		if (!existing) {
+			titleEl.insertAdjacentElement("afterend", secondaryEl);
 		}
 	}
 

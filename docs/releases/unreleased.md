@@ -23,3 +23,7 @@ Example:
 ```
 
 -->
+
+## Added
+
+- Added a calendar secondary property setting that can show a chosen task frontmatter value beneath task titles in calendar cards.

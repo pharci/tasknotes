@@ -47,6 +47,8 @@ export { showTaskContextMenu } from "./taskCardContextMenu";
 export interface TaskCardOptions {
 	targetDate?: Date;
 	layout?: "default" | "compact" | "inline";
+	/** Optional frontmatter property rendered below the task title. */
+	secondaryProperty?: string;
 	/** When true, hide status indicator (e.g., when Kanban is grouped by status) */
 	hideStatusIndicator?: boolean;
 	/** When false, omit secondary badge controls such as reminders, project badges, and toggles. */
@@ -230,6 +232,7 @@ export function createTaskCard(
 		plugin,
 		displayText: opts.displayText,
 		isCompleted,
+		secondaryProperty: opts.secondaryProperty,
 	});
 
 	// Second line: Metadata (dynamic based on visible properties)
@@ -351,6 +354,7 @@ export function updateTaskCard(
 		plugin,
 		displayText: opts.displayText,
 		isCompleted,
+		secondaryProperty: opts.secondaryProperty,
 	});
 
 	const legacyBlockedBadge = element.querySelector(".task-card__badge--blocked");
