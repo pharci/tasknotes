@@ -20,6 +20,7 @@ export interface CalendarTaskEvent {
 	start: string;
 	end?: string;
 	allDay: boolean;
+	display?: string;
 	backgroundColor?: string;
 	borderColor?: string;
 	textColor?: string;
@@ -84,6 +85,7 @@ export function createScheduledTaskEvent(
 		start: startDate,
 		end: endDate,
 		allDay: !hasTime,
+		display: "block",
 		backgroundColor: "transparent",
 		borderColor,
 		textColor,
@@ -126,6 +128,7 @@ export function createDueTaskEvent(
 		start: startDate,
 		end: endDate,
 		allDay: !hasTime,
+		display: "block",
 		backgroundColor: colorWithAlpha(borderColor, 0.15),
 		borderColor,
 		textColor,
@@ -181,6 +184,7 @@ function createAllDayScheduledToDueSpanEvent(
 		start: format(scheduledDate, "yyyy-MM-dd"),
 		end: format(endDateExclusive, "yyyy-MM-dd"),
 		allDay: true,
+		display: "block",
 		backgroundColor: colorWithAlpha(borderColor, 0.2),
 		borderColor,
 		textColor,
@@ -243,6 +247,7 @@ function createTimedScheduledToDueSpanEvents(
 			start: format(start, "yyyy-MM-dd'T'HH:mm"),
 			end,
 			allDay: false,
+			display: "block",
 			backgroundColor: colorWithAlpha(borderColor, 0.2),
 			borderColor,
 			textColor,
@@ -310,6 +315,7 @@ export function createTimeEntryTaskEvents(
 			start: entry.startTime,
 			end: entry.endTime,
 			allDay: false,
+			display: "block",
 			editable: true,
 			extendedProps: {
 				taskInfo: task,
