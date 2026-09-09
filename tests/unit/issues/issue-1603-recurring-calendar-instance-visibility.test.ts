@@ -20,6 +20,9 @@ function createPlugin(): TaskNotesPlugin {
 		priorityManager: {
 			getPriorityConfig: jest.fn().mockReturnValue({ color: "#3366ff" }),
 		},
+		statusManager: {
+			getStatusConfig: jest.fn().mockReturnValue(undefined),
+		},
 	} as unknown as TaskNotesPlugin;
 }
 
@@ -48,6 +51,7 @@ describe("Issue #1603: recurring calendar instance visibility", () => {
 
 		expect(dates).toContain("2026-02-02");
 		expect(dates).toContain("2026-02-03");
+		expect(events.every((event) => event.display === "block")).toBe(true);
 	});
 
 	it("can hide completed and skipped recurring instances independently", () => {

@@ -27,3 +27,8 @@ Example:
 ## Added
 
 - Added a calendar secondary property setting that can show a chosen task frontmatter value beneath task titles in calendar cards.
+
+## Fixed
+
+- (#759) Fixed recurring task events rendering as single-line dots instead of vertical block events in calendar dayGrid views.
+    - Thanks to the reporter of #759 for identifying the issue.

@@ -62,6 +62,7 @@ export interface CalendarEvent {
 	start: string;
 	end?: string;
 	allDay: boolean;
+	display?: string;
 	backgroundColor?: string;
 	borderColor?: string;
 	textColor?: string;
@@ -719,6 +720,7 @@ export function createNextScheduledEvent(
 		start: eventStart,
 		end: endDate,
 		allDay: !hasTime,
+		display: "block",
 		backgroundColor: backgroundColor,
 		borderColor: borderColor,
 		textColor: textColor,
@@ -779,6 +781,7 @@ export function createRecurringEvent(
 		start: eventStart,
 		end: endDate,
 		allDay: !hasTime,
+		display: "block",
 		backgroundColor: backgroundColor,
 		borderColor: fadedBorderColor,
 		textColor: textColor,
@@ -1257,7 +1260,7 @@ export async function handleTimeEntryCreation(
 		}
 
 		// Open task selector modal
-		openTaskSelector(plugin, unarchivedTasks, (selectedTask: TaskInfo) => {
+		openTaskSelector(plugin, unarchivedTasks, (selectedTask: TaskInfo | null) => {
 			void (async () => {
 				if (selectedTask) {
 					try {
