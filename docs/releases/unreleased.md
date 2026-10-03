@@ -32,3 +32,8 @@ Example:
 
 - (#759) Fixed recurring task events rendering as single-line dots instead of vertical block events in calendar dayGrid views.
     - Thanks to the reporter of #759 for identifying the issue.
+- Fixed single course links being missed when showing related tasks, and allowed creating a subtask when no existing tasks are available to select.
+
+## Changed
+
+- Renamed the plugin to TaskNotes Fork so Obsidian can keep it separate from the original plugin.

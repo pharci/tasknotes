@@ -231,7 +231,6 @@ const scopedSelectorsRule = createPlugin(scopedSelectorsRuleName, (enabled) => {
 
 		if (
 			!filePath.includes("/styles/") ||
-			filePath.includes("/docs-builder/") ||
 			ignoredSelectorFiles.has(fileName)
 		) {
 			return;
@@ -280,10 +279,6 @@ const noFixedPositionRule = createPlugin(noFixedPositionRuleName, (enabled) => {
 		}
 
 		const filePath = root.source?.input?.file ?? "";
-		if (filePath.includes("/docs-builder/")) {
-			return;
-		}
-
 		root.walkDecls("position", (declaration) => {
 			if (declaration.value.toLowerCase() !== "fixed") {
 				return;

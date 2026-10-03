@@ -7,6 +7,20 @@ import { createTaskNotesLogger } from "../utils/tasknotesLogger";
 
 const tasknotesLogger = createTaskNotesLogger({ tag: "Services/ProjectSubtasksService" });
 
+function getProjectReferences(value: unknown): string[] {
+	if (typeof value === "string") {
+		return value.trim() ? [value] : [];
+	}
+
+	if (Array.isArray(value)) {
+		return value.filter(
+			(project): project is string => typeof project === "string" && project.trim().length > 0
+		);
+	}
+
+	return [];
+}
+
 export class ProjectSubtasksService {
 	private plugin: TaskNotesPlugin;
 	private cacheEventRefs: EventRef[] = [];
@@ -130,15 +144,10 @@ export class ProjectSubtasksService {
 
 			// Use the user's configured field mapping for projects
 			const projectsFieldName = this.plugin.fieldMapper.toUserField("projects");
-			if (!metadata?.frontmatter?.[projectsFieldName]) return false;
-
-			const projects = metadata.frontmatter[projectsFieldName];
-			if (!Array.isArray(projects)) return false;
+			const projects = getProjectReferences(metadata?.frontmatter?.[projectsFieldName]);
 
 			// Check if any project reference resolves to our target
 			for (const project of projects) {
-				if (!project || typeof project !== "string") continue;
-
 				// Parse the link to extract the path (handles both wikilinks and markdown links)
 				const linkPath = parseLinkToPath(project);
 
@@ -209,14 +218,10 @@ export class ProjectSubtasksService {
 
 				// Use the user's configured field mapping for projects
 				const projectsFieldName = this.plugin.fieldMapper.toUserField("projects");
-				const projects = metadata.frontmatter[projectsFieldName];
-
-				if (!Array.isArray(projects)) continue;
+				const projects = getProjectReferences(metadata.frontmatter[projectsFieldName]);
 
 				// Check if any project reference resolves to our target
 				for (const project of projects) {
-					if (!project || typeof project !== "string") continue;
-
 					// Parse the link to extract the path (handles both wikilinks and markdown links)
 					const linkPath = parseLinkToPath(project);
 

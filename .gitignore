@@ -11,11 +11,8 @@ node_modules
 # Environment variables (contains OAuth client IDs)
 .env
 
-# Don't include the compiled main.js file in the repo.
-# They should be uploaded to GitHub releases instead.
+# Build outputs are recreated by npm run build.
 main.js
-# Keep docs site source JS tracked.
-!docs-builder/src/js/main.js
 
 # Don't include the generated styles.css file in the repo.
 # It's built from source files in styles/ directory during CI/build process.
@@ -56,18 +53,14 @@ project
 webhook*.log
 
 
-# Exclude local test vaults and e2e cache artifacts
-external/tasknotes-e2e/.e2e/
+# Exclude local build copy overrides
 C/
 .copy-files.local
 
-# E2E testing - unpacked Obsidian and test results
-.obsidian-unpacked/
-test-results/
-# E2E vault plugin symlinks (point to build output)
-tasknotes-e2e-vault/.obsidian/plugins/tasknotes/main.js
-tasknotes-e2e-vault/.obsidian/plugins/tasknotes/manifest.json
-tasknotes-e2e-vault/.obsidian/plugins/tasknotes/styles.css
+# Test vault build outputs
+tasknotes-e2e-vault/.obsidian/plugins/tasknotes-fork/main.js
+tasknotes-e2e-vault/.obsidian/plugins/tasknotes-fork/manifest.json
+tasknotes-e2e-vault/.obsidian/plugins/tasknotes-fork/styles.css
 .augment
 # Test output files
 jest-out.txt
@@ -79,29 +72,14 @@ obsidian-help
 obsidian-api
 .clump
 tasknotes-e2e-vault/.obsidian/workspace.json
-.obsidian-config-e2e
 # Generated calendar files
 tasknotes-e2e-vault/*.ics
 /.ops
 AGENTS.md
-/docs-builder/dist
 .ops/
 .serena/
 /.codex
 
-# Hyperframes release-announcement videos
-# Track HTML source + audio + docs in git; ignore rendered mp4s and experimental dirs.
-/release-videos/*
-!/release-videos/_audio/
-!/release-videos/_shared/
-!/release-videos/_shared/**
-!/release-videos/INSTRUCTIONS.md
-!/release-videos/render-with-crt.sh
-!/release-videos/4.5.2/
-/release-videos/_audio/*.wav
-/release-videos/_audio/__pycache__/
-/release-videos/4.5.2/*.mp4
-/release-videos
 /.agents/skills/impeccable
 /.tmp
 /DESIGN.md

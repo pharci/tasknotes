@@ -279,8 +279,6 @@ export default [
 			"dist/**",
 			"coverage/**",
 			"docs/**",
-			"docs-builder/**",
-			"e2e/**",
 			"scripts/**",
 			"conformance/**",
 			"**/*.test.ts",

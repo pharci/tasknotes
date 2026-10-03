@@ -21,6 +21,7 @@ export interface OpenTaskModalTaskSelectorOptions {
 	noEligibleTasksMessageKey: string;
 	openFailedMessageKey: string;
 	logOperation: string;
+	allowEmptyCandidates?: boolean;
 	openSelector?: TaskModalTaskSelectorOpener;
 	showNotice?: (message: string) => void;
 	logger?: Pick<TaskNotesLogger, "error">;
@@ -37,6 +38,7 @@ export async function openTaskModalTaskSelector({
 	noEligibleTasksMessageKey,
 	openFailedMessageKey,
 	logOperation,
+	allowEmptyCandidates = false,
 	openSelector = openTaskSelector,
 	showNotice = (message) => {
 		new Notice(message);
@@ -47,7 +49,7 @@ export async function openTaskModalTaskSelector({
 		const allTasks = (await getAllTasks()) ?? [];
 		const candidates = [...getCandidates(allTasks)];
 
-		if (candidates.length === 0) {
+		if (candidates.length === 0 && !allowEmptyCandidates) {
 			showNotice(translate(noEligibleTasksMessageKey));
 			return "empty";
 		}

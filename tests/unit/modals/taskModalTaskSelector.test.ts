@@ -77,6 +77,29 @@ describe("openTaskModalTaskSelector", () => {
 		expect(showNotice).toHaveBeenCalledWith("translated:empty");
 	});
 
+	it("opens the selector with no candidates when empty results are allowed", async () => {
+		const showNotice = jest.fn();
+		const openSelector = jest.fn();
+		const plugin = pluginWithTasks([]);
+
+		const result = await openTaskModalTaskSelector({
+			plugin,
+			getCandidates: () => [],
+			onSelect: jest.fn(),
+			translate: (key) => `translated:${key}`,
+			noEligibleTasksMessageKey: "empty",
+			openFailedMessageKey: "failed",
+			logOperation: "test-selector",
+			allowEmptyCandidates: true,
+			openSelector,
+			showNotice,
+		});
+
+		expect(result).toBe("opened");
+		expect(openSelector).toHaveBeenCalledWith(plugin, [], expect.any(Function));
+		expect(showNotice).not.toHaveBeenCalled();
+	});
+
 	it("reports selector setup failures with the configured notice and log operation", async () => {
 		const error = new Error("cache unavailable");
 		const showNotice = jest.fn();

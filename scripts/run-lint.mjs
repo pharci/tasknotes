@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const npmExecPath = process.env.npm_execpath;
 
 const tasks = [
 	["run", "lint:ts"],
@@ -10,9 +10,12 @@ const tasks = [
 let failed = false;
 
 for (const args of tasks) {
-	const result = spawnSync(npmCommand, args, {
-		stdio: "inherit",
-	});
+	const result = npmExecPath
+		? spawnSync(process.execPath, [npmExecPath, ...args], { stdio: "inherit" })
+		: spawnSync(process.platform === "win32" ? "npm.cmd" : "npm", args, {
+				stdio: "inherit",
+				shell: process.platform === "win32",
+			});
 
 	if (result.status !== 0) {
 		failed = true;

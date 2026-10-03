@@ -1156,6 +1156,7 @@ export abstract class TaskModal extends Modal {
 			noEligibleTasksMessageKey: "modals.task.organization.notices.noEligibleSubtasks",
 			openFailedMessageKey: "modals.task.organization.notices.subtaskSelectFailed",
 			logOperation: "open-subtask-selector",
+			allowEmptyCandidates: true,
 		});
 	}
 
