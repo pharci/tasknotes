@@ -226,5 +226,32 @@ describe('TaskManager.isTaskFile - tag hash prefix handling', () => {
 
 			expect(isTaskFile({ flags: ['note', true] }, settings)).toBe(true);
 		});
+
+		it('identifies notes by a non-empty property when no identifier value is configured', () => {
+			const settings: IsTaskFileSettings = {
+				taskIdentificationMethod: 'property',
+				taskPropertyName: 'scheduled',
+				taskPropertyValue: '',
+				taskTag: 'task',
+			};
+
+			expect(isTaskFile({ scheduled: '2026-09-30T00:00:00' }, settings)).toBe(true);
+			expect(isTaskFile({ scheduled: '' }, settings)).toBe(false);
+			expect(isTaskFile({ scheduled: '   ' }, settings)).toBe(false);
+			expect(isTaskFile({ scheduled: null }, settings)).toBe(false);
+			expect(isTaskFile({}, settings)).toBe(false);
+		});
+
+		it('identifies notes when at least one array property value is non-empty', () => {
+			const settings: IsTaskFileSettings = {
+				taskIdentificationMethod: 'property',
+				taskPropertyName: 'scheduled',
+				taskPropertyValue: '',
+				taskTag: 'task',
+			};
+
+			expect(isTaskFile({ scheduled: ['', '2026-09-30'] }, settings)).toBe(true);
+			expect(isTaskFile({ scheduled: ['', null] }, settings)).toBe(false);
+		});
 	});
 });

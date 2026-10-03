@@ -21,6 +21,17 @@ function getProjectReferences(value: unknown): string[] {
 	return [];
 }
 
+function normalizeProjectPath(path: string): string {
+	let normalizedPath = path.trim().replace(/\\/g, "/");
+	try {
+		normalizedPath = decodeURIComponent(normalizedPath);
+	} catch {
+		// Keep the original path when it contains invalid URI escapes.
+	}
+
+	return normalizedPath.replace(/^\/+|\/+$/g, "").replace(/\.md$/i, "").toLowerCase();
+}
+
 export class ProjectSubtasksService {
 	private plugin: TaskNotesPlugin;
 	private cacheEventRefs: EventRef[] = [];
@@ -74,6 +85,27 @@ export class ProjectSubtasksService {
 		return linkingSources;
 	}
 
+	private resolveProjectReferences(linkPath: string, sourcePath: string): TFile[] {
+		const resolvedFiles = [
+			this.plugin.app.metadataCache.getFirstLinkpathDest(linkPath, sourcePath),
+			this.plugin.app.metadataCache.getFirstLinkpathDest(linkPath, ""),
+		];
+		return resolvedFiles.filter(
+			(file, index): file is TFile =>
+				file !== null &&
+				resolvedFiles.findIndex((resolvedFile) => resolvedFile?.path === file.path) === index
+		);
+	}
+
+	private projectReferenceMatchesPath(linkPath: string, targetFilePath: string): boolean {
+		const referencePath = normalizeProjectPath(linkPath);
+		const targetPath = normalizeProjectPath(targetFilePath);
+		return (
+			referencePath.includes("/") &&
+			(targetPath === referencePath || targetPath.endsWith(`/${referencePath}`))
+		);
+	}
+
 	/**
 	 * Check for unresolved project references (broken links)
 	 * Useful for debugging and maintenance
@@ -96,7 +128,7 @@ export class ProjectSubtasksService {
 	 */
 	async getTasksLinkedToProject(projectFile: TFile): Promise<TaskInfo[]> {
 		try {
-			const linkingSources = this.getFilesLinkingToProject(projectFile.path);
+			const linkingSources = new Set(this.getFilesLinkingToProject(projectFile.path));
 			const linkedTasks: TaskInfo[] = [];
 
 			for (const sourcePath of linkingSources) {
@@ -106,6 +138,18 @@ export class ProjectSubtasksService {
 					taskInfo &&
 					(await this.isLinkFromProjectsField(sourcePath, projectFile.path))
 				) {
+					linkedTasks.push(taskInfo);
+				}
+			}
+
+			for (const sourceFile of this.plugin.app.vault.getMarkdownFiles()) {
+				if (linkingSources.has(sourceFile.path)) continue;
+				if (!(await this.isLinkFromProjectsField(sourceFile.path, projectFile.path))) {
+					continue;
+				}
+
+				const taskInfo = await this.plugin.cacheManager.getTaskInfo(sourceFile.path);
+				if (taskInfo) {
 					linkedTasks.push(taskInfo);
 				}
 			}
@@ -157,12 +201,11 @@ export class ProjectSubtasksService {
 				}
 
 				// Resolve the link to get the actual file
-				const resolvedFile = this.plugin.app.metadataCache.getFirstLinkpathDest(
-					linkPath,
-					sourceFilePath
-				);
-
-				if (resolvedFile && resolvedFile.path === targetFilePath) {
+				const resolvedFiles = this.resolveProjectReferences(linkPath, sourceFilePath);
+				if (
+					resolvedFiles.some((resolvedFile) => resolvedFile.path === targetFilePath) ||
+					this.projectReferenceMatchesPath(linkPath, targetFilePath)
+				) {
 					return true;
 				}
 			}
@@ -201,13 +244,22 @@ export class ProjectSubtasksService {
 		this.stats.indexBuilds++;
 
 		try {
-			const resolvedLinks = this.plugin.app.metadataCache.resolvedLinks;
 			const projectPaths = new Set<string>();
+			const projectPathsBySuffix = new Map<string, string[]>();
+			const markdownFiles = this.plugin.app.vault.getMarkdownFiles();
+			for (const file of markdownFiles) {
+				const pathSegments = normalizeProjectPath(file.path).split("/");
+				for (let index = 0; index < pathSegments.length - 1; index++) {
+					const suffix = pathSegments.slice(index).join("/");
+					const matchingPaths = projectPathsBySuffix.get(suffix) ?? [];
+					matchingPaths.push(file.path);
+					projectPathsBySuffix.set(suffix, matchingPaths);
+				}
+			}
 
-			// Single pass through all resolved links to find project targets
-			for (const [sourcePath, targets] of Object.entries(resolvedLinks)) {
-				if (!targets) continue;
-
+			// Scan task metadata so links missing from resolvedLinks still count.
+			for (const sourceFile of markdownFiles) {
+				const sourcePath = sourceFile.path;
 				// Check if source has projects frontmatter
 				const metadata = this.plugin.app.metadataCache.getCache(sourcePath);
 
@@ -231,14 +283,13 @@ export class ProjectSubtasksService {
 					}
 
 					// Resolve the link to get the actual file
-					const resolvedFile = this.plugin.app.metadataCache.getFirstLinkpathDest(
-						linkPath,
-						sourcePath
-					);
-					// After line 207:
-
-					if (resolvedFile) {
+					const resolvedFiles = this.resolveProjectReferences(linkPath, sourcePath);
+					for (const resolvedFile of resolvedFiles) {
 						projectPaths.add(resolvedFile.path);
+					}
+					const matchingPaths = projectPathsBySuffix.get(normalizeProjectPath(linkPath));
+					for (const matchingPath of matchingPaths ?? []) {
+						projectPaths.add(matchingPath);
 					}
 				}
 			}

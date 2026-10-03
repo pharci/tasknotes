@@ -64,7 +64,10 @@ describe('Issue #814: Markdown project links not recognized', () => {
                         return file;
                     }
                     return null;
-                })
+                }),
+                getMarkdownFiles: jest.fn(() => [
+                    mockApp.vault.getAbstractFileByPath('test-task.md')
+                ])
             }
         };
 

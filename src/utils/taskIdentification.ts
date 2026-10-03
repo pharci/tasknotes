@@ -37,10 +37,20 @@ export function isTaskFrontmatter(
 	if (settings.taskIdentificationMethod === "property") {
 		const propName = settings.taskPropertyName;
 		const propValue = settings.taskPropertyValue;
-		if (!propName || !propValue) return false;
+		if (!propName) return false;
 
 		const frontmatterValue = frontmatter[propName];
 		if (frontmatterValue === undefined) return false;
+
+		if (!propValue.trim()) {
+			const isPresent = (value: unknown): boolean =>
+				value !== null &&
+				value !== undefined &&
+				(typeof value !== "string" || value.trim().length > 0);
+			return Array.isArray(frontmatterValue)
+				? frontmatterValue.some(isPresent)
+				: isPresent(frontmatterValue);
+		}
 
 		if (Array.isArray(frontmatterValue)) {
 			return frontmatterValue.some((val: unknown) =>

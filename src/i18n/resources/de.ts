@@ -895,7 +895,7 @@ export const de: TranslationTree = {
 				},
 				taskPropertyValue: {
 					name: "Aufgabeneigenschaftswert",
-					description: "Der Wert, der eine Notiz als Aufgabe identifiziert (z.B. \"task\")"
+					description: "Der Wert, der eine Notiz als Aufgabe identifiziert (z.B. \"task\"). Leer lassen, um Notizen mit einem beliebigen nicht leeren Wert für die ausgewählte Eigenschaft als Aufgaben zu erkennen."
 				}
 			},
 			folderManagement: {
