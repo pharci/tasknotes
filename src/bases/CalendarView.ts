@@ -2610,6 +2610,7 @@ export class CalendarView extends BasesViewBase {
 			arg.el.classList.add("fc-task-event");
 			this.attachTaskEventHoverLink(arg.el, taskInfo.path);
 			this.renderCalendarEventSecondaryProperty(arg.el, taskInfo);
+			this.organizeDayGridTaskEvent(arg.el);
 
 			// Add tag classes to tasks
 			if (taskInfo.tags && taskInfo.tags.length > 0) {
@@ -2786,6 +2787,35 @@ export class CalendarView extends BasesViewBase {
 		if (!existing) {
 			titleEl.insertAdjacentElement("afterend", secondaryEl);
 		}
+	}
+
+	private organizeDayGridTaskEvent(element: HTMLElement): void {
+		if (!element.classList.contains("fc-daygrid-block-event")) {
+			return;
+		}
+
+		const mainFrame = element.querySelector<HTMLElement>(".fc-event-main-frame");
+		const timeEl = mainFrame?.querySelector<HTMLElement>(".fc-event-time");
+		const titleContainer = mainFrame?.querySelector<HTMLElement>(
+			".fc-event-title-container"
+		);
+		const titleEl = titleContainer?.querySelector<HTMLElement>(".fc-event-title");
+		const secondaryEl = titleContainer?.querySelector<HTMLElement>(
+			".fc-task-secondary-property"
+		);
+
+		if (!mainFrame || !timeEl || !titleContainer || !titleEl) {
+			return;
+		}
+
+		const titleRow = element.ownerDocument.createElement("div");
+		titleRow.className = "fc-task-title-row";
+		titleRow.append(timeEl, titleEl);
+		mainFrame.insertBefore(titleRow, titleContainer);
+		if (secondaryEl) {
+			mainFrame.insertBefore(secondaryEl, titleContainer);
+		}
+		titleContainer.remove();
 	}
 
 	private attachTaskEventHoverLink(element: HTMLElement, taskPath: string): void {
